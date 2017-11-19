@@ -18,6 +18,7 @@ class GoClass {
   async init(aCode, vars) {
     const name = this.genRandomName();
     const code = this.injectVariables(aCode, vars);
+    this.getImports(code);
     this.Path = await this.saveCode(name, code);
   }
 
@@ -34,7 +35,7 @@ class GoClass {
       code = code.map(c => (c += `${vars[code.indexOf(c)] || ""}`));
       return code.join("");
     }
-    return code;
+    return code.join("");
   }
 
   async saveCode(name, code) {
@@ -78,6 +79,29 @@ class GoClass {
             .shift()} ${path}`
         );
         break;
+    }
+  }
+
+  async getImports(code) {
+    const aCode = code.split("\n");
+    let insideImport = false;
+    const imports = [];
+    aCode.forEach(line => {
+      if (line.indexOf("import") != -1) {
+        if (line.indexOf('"') != -1) {
+          const splited = line.split('"');
+          imports.push(splited[1]);
+        } else if (line.indexOf("(") != -1) {
+          insideImport = true;
+        }
+      } else if (insideImport && line.indexOf(")") != -1) {
+        insideImport = false;
+      } else if (insideImport) {
+        imports.push(line.split('"')[1]);
+      }
+    });
+    for (let pkg in imports) {
+      await this.executeCmd(`go get ${imports[pkg]}`);
     }
   }
 
