@@ -18,7 +18,7 @@ class GoClass {
   async init(aCode, vars) {
     const name = this.genRandomName();
     const code = this.injectVariables(aCode, vars);
-    this.getImports(code);
+    await this.getImports(code);
     this.Path = await this.saveCode(name, code);
   }
 
