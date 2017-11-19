@@ -1,6 +1,6 @@
 {
   "name": "golang-node",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Write Golang code inside NodeJS",
   "main": "index.js",
   "scripts": {

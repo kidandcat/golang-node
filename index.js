@@ -25,7 +25,8 @@ class GoClass {
   genRandomName() {
     let text = "";
     const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    for (let i = 0; i < 5; i++)
+    // Seven is the number of Luck
+    for (let i = 0; i < 7; i++)
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
   }
@@ -136,10 +137,8 @@ function deleteFolderRecursive(path) {
     fs.readdirSync(path).forEach(function(file, index) {
       var curPath = path + "/" + file;
       if (fs.lstatSync(curPath).isDirectory()) {
-        // recurse
         deleteFolderRecursive(curPath);
       } else {
-        // delete file
         fs.unlinkSync(curPath);
       }
     });

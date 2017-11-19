@@ -6,13 +6,12 @@ Execute Go code from NodeJS
 * Go command line accesible by NodeJS
 * Go version > 1.9.0
 * NodeJS > 8.5.0
-* ```go get package``` all packages used
 
 ## Example
 
 Compile program:
 ```
-code = await Go`
+const code = await Go`
 package main
       
 import "fmt"
