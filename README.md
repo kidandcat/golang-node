@@ -10,7 +10,7 @@ Execute Go code from NodeJS
 ## Example
 
 Compile program:
-```
+```javascript
 const code = await Go`
 package main
       
@@ -23,6 +23,6 @@ func main(){
 `;
 ```
 then execute it and get the result:
-```
+```javascript
 const res = await code.run();
 ```
