@@ -2,17 +2,18 @@ const Go = require("../index");
 let code;
 
 describe("Works", function() {
-  it("It compiles", async function() {
+  it("It compiles with variables", async function() {
+    const verb = "Hello";
+    const name = "World";
     code = await Go`
-          package main
-      
-          import "fmt"
-      
-          func main(){
-              fmt.Println("Hello World from Golang!!")
-              fmt.Println("    Testing another line")
-          }
-          `;
+package main
+
+import "fmt"
+
+func main(){
+    fmt.Println("${verb} ${name} from Golang!!")
+    fmt.Println("    Testing another line")
+}`;
     expect(code).not.toBeUndefined();
     expect(code.run).not.toBeUndefined();
   });
