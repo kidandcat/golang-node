@@ -31,8 +31,8 @@ class GoClass {
 
   injectVariables(code, vars) {
     if (vars.length > 0) {
-      code = code.map(c => (c += ` vars[code.indexOf(c)]`));
-      return code.join(" ");
+      code = code.map(c => (c += `${vars[code.indexOf(c)] || ""}`));
+      return code.join("");
     }
     return code;
   }
