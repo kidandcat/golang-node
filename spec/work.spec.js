@@ -2,18 +2,34 @@ const Go = require("../index");
 let code;
 
 describe("Works", function() {
+  beforeEach(function() {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+  });
+
   it("It compiles with variables", async function() {
     const verb = "Hello";
     const name = "World";
     code = await Go`
 package main
 
-import "fmt"
+import (
+  "fmt"
+  "github.com/phayes/freeport"
+)
 
 func main(){
-    fmt.Println("${verb} ${name} from Golang!!")
-    fmt.Println("    Testing another line")
-}`;
+  getFreePort()
+  fmt.Println("${verb} ${name} from Golang!!")
+  fmt.Println("    Testing another line")
+}
+
+func getFreePort(){
+  _, err := freeport.GetFreePort()
+  if err != nil {
+    fmt.Println(err)
+  }
+}
+`;
     expect(code).not.toBeUndefined();
     expect(code.run).not.toBeUndefined();
   });
