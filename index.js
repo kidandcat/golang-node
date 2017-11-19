@@ -84,11 +84,15 @@ class GoClass {
   async runBinary() {
     switch (process.platform) {
       case "win32":
-        return await this.executeCmd(`${this.Path}.exe`);
+        let win32 = await this.executeCmd(`${this.Path}.exe`);
+        return win32.trim();
         break;
       case "linux":
-        return await this.executeCmd(`.${this.Path}`);
+        let linux = await this.executeCmd(`${this.Path}`);
+        return linux.trim();
         break;
+      default:
+        throw new Error("Platform not supported");
     }
   }
 
