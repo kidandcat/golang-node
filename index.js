@@ -73,9 +73,9 @@ class GoClass {
               .split("/")
               .pop()
               .split(".")
-              .shift()}.exe ${path.split("/").join("\\")}`,
-            this.getWindowsEnvironment()
-          )
+              .shift()}.exe ${path.split("/").join("\\")}`
+          ),
+          this.getWindowsEnvironment()
         );
         break;
       case "linux":
@@ -85,9 +85,9 @@ class GoClass {
               .split("/")
               .pop()
               .split(".")
-              .shift()} ${path}`,
-            this.getLinuxEnvironment()
-          )
+              .shift()} ${path}`
+          ),
+          this.getLinuxEnvironment()
         );
         break;
     }
@@ -133,12 +133,16 @@ class GoClass {
     switch (process.platform) {
       case "win32":
         let win32 = await this.executeCmd(
-          `${this.Path.split("/").join("\\")}.exe`
+          `${this.Path.split("/").join("\\")}.exe`,
+          this.getWindowsEnvironment()
         );
         return win32.trim();
         break;
       case "linux":
-        let linux = await this.executeCmd(`${this.Path}`);
+        let linux = await this.executeCmd(
+          `${this.Path}`,
+          this.getLinuxEnvironment()
+        );
         return linux.trim();
       default:
         throw new Error("Platform not supported");
@@ -172,13 +176,22 @@ class GoClass {
     return process.arch == "x64" ? "64" : "32";
   }
 
-  async executeCmd(cmd, env = {}) {
+  async executeCmd(cmd, env) {
     return new Promise((ac, re) => {
-      exec(cmd, { env }, (err, stdout, stderr) => {
-        if (err) re(err);
-        ac(stdout);
-        if (stderr) re(stderr);
-      });
+      exec(
+        cmd,
+        {
+          env: {
+            ...process.env,
+            ...env
+          }
+        },
+        (err, stdout, stderr) => {
+          if (err) re(err);
+          ac(stdout);
+          if (stderr) re(stderr);
+        }
+      );
     });
   }
 }
