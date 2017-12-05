@@ -1,7 +1,7 @@
 # golang-node
 Execute Go code from NodeJS
 
-Golang code compiles so fast, but may be not worth if the Go program task is not too intensive for NodeJS. In the other case, if you need to make a high intensive task, you may want to do it in Go. For example, this package has been used for 
+Golang code compiles so fast, but may be not worth if the Go program task is not too intensive for NodeJS. In the other case, if you need to make a high intensive task, you may want to do it in Go.
 
 ## Requirements
 
