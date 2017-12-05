@@ -3,6 +3,10 @@ const fs = require("fs");
 const targz = require("targz");
 const extract = require("extract-zip");
 
+if (!fs.existsSync(`${__dirname}/compilers`)) {
+  fs.mkdirSync(`${__dirname}/compilers`);
+}
+
 switch (process.platform) {
   case "win32":
     deleteFolderRecursive(`${__dirname}\\compilers\\windows_64`);
