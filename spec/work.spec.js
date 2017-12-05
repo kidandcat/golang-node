@@ -3,7 +3,7 @@ let code;
 
 describe("Works", function() {
   beforeEach(function() {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
   });
 
   it("It compiles with variables", async function() {

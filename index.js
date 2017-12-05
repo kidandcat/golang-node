@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 const fs = require("fs");
 
+deleteFolderRecursive(`${__dirname}/.go.home`);
 deleteFolderRecursive(`${__dirname}/.go.sources`);
 deleteFolderRecursive(`${__dirname}/.go.compiled`);
 
@@ -16,6 +17,9 @@ module.exports = async (text, ...vars) => {
 
 class GoClass {
   async init(aCode, vars) {
+    if (!fs.existsSync(`${__dirname}/.go.home`)) {
+      fs.mkdirSync(`${__dirname}/.go.home`);
+    }
     const name = this.genRandomName();
     const code = this.injectVariables(aCode, vars);
     await this.getImports(code);
@@ -64,20 +68,26 @@ class GoClass {
     switch (process.platform) {
       case "win32":
         await this.executeCmd(
-          `go build -o ${__dirname}/.go.compiled/${path
-            .split("/")
-            .pop()
-            .split(".")
-            .shift()}.exe ${path}`
+          this.getWindowsCompiler(
+            `build -o ${__dirname}\\.go.compiled\\${path
+              .split("/")
+              .pop()
+              .split(".")
+              .shift()}.exe ${path.split("/").join("\\")}`,
+            this.getWindowsEnvironment()
+          )
         );
         break;
       case "linux":
         await this.executeCmd(
-          `go build -o ${__dirname}/.go.compiled/${path
-            .split("/")
-            .pop()
-            .split(".")
-            .shift()} ${path}`
+          this.getLinuxCompiler(
+            `build -o ${__dirname}/.go.compiled/${path
+              .split("/")
+              .pop()
+              .split(".")
+              .shift()} ${path}`,
+            this.getLinuxEnvironment()
+          )
         );
         break;
     }
@@ -102,28 +112,69 @@ class GoClass {
       }
     });
     for (let pkg in imports) {
-      await this.executeCmd(`go get ${imports[pkg]}`);
+      switch (process.platform) {
+        case "win32":
+          await this.executeCmd(
+            this.getWindowsCompiler(`get ${imports[pkg]}`),
+            this.getWindowsEnvironment()
+          );
+          break;
+        case "linux":
+          await this.executeCmd(
+            this.getLinuxCompiler(`get ${imports[pkg]}`),
+            this.getLinuxEnvironment()
+          );
+          break;
+      }
     }
   }
 
   async runBinary() {
     switch (process.platform) {
       case "win32":
-        let win32 = await this.executeCmd(`${this.Path}.exe`);
+        let win32 = await this.executeCmd(
+          `${this.Path.split("/").join("\\")}.exe`
+        );
         return win32.trim();
         break;
       case "linux":
         let linux = await this.executeCmd(`${this.Path}`);
         return linux.trim();
-        break;
       default:
         throw new Error("Platform not supported");
     }
   }
 
-  async executeCmd(cmd) {
+  getLinuxCompiler(command) {
+    return `${__dirname}/compilers/linux_${this.getArch()}/bin/go ${command}`;
+  }
+  getWindowsCompiler(command) {
+    return `${__dirname}\\compilers\\windows_${this.getArch()}\\bin\\go.exe ${
+      command
+    }`;
+  }
+
+  getWindowsEnvironment() {
+    return {
+      GOPATH: `${__dirname}\\.go.home`,
+      GOROOT: `${__dirname}\\compilers\\windows_${this.getArch()}`
+    };
+  }
+
+  getLinuxEnvironment() {
+    return {
+      GOPATH: `${__dirname}/.go.home`,
+      GOROOT: `${__dirname}/compilers/linux_${this.getArch()}`
+    };
+  }
+
+  getArch() {
+    return process.arch == "x64" ? "64" : "32";
+  }
+
+  async executeCmd(cmd, env = {}) {
     return new Promise((ac, re) => {
-      exec(cmd, (err, stdout, stderr) => {
+      exec(cmd, { env }, (err, stdout, stderr) => {
         if (err) re(err);
         ac(stdout);
         if (stderr) re(stderr);

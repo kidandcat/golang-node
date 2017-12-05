@@ -1,3 +1,5 @@
 node_modules/
 .go.compiled/
 .go.sources/
+.go.home/
+compilers/
