@@ -1,16 +1,21 @@
 # golang-node
 Execute Go code from NodeJS
 
-Golang code compiles so fast, but may be not worth if the Go program task is not too intensive for NodeJS. In the other case, if you need to make a high intensive task, you may want to do it in Go. For example, this package has been used for 
+Golang code compiles so fast, but may be not worth if the Go program task is not too intensive for NodeJS. In the other case, if you need to make a high intensive task, you may want to do it in Go.
 
 ## Requirements
 
-* Go command line accesible by NodeJS
-* Go version > 1.9.0
 * NodeJS > 8.5.0
 
 ## Features
 
+* Download custom Go compiler, no need to have Go installed
+```diff
+- AUTOMATIC DOWNLOAD IS NOT SET YET, YOU WILL NEED TO DOWNLOAD 
+- THE PROPER GO COMPILER AND COPY IT UNDER "compilers" FOLDER AND 
+- CHANGE THE Go FOLDER'S NAME TO THE PLATFORM NAME 
+- (windows_64 or linux_64 for example)
+```
 * Automatically "go get" all imported packages
 
 ## Example
