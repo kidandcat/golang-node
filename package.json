@@ -1,11 +1,11 @@
 {
   "name": "golang-node",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Write Golang code inside NodeJS",
   "main": "index.js",
   "scripts": {
     "test": "jasmine",
-    "postinstall": "node installer.js"
+    "install": "node installer.js"
   },
   "author": "Jairo Caro-Accino Viciana",
   "license": "MIT",
