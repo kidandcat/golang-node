@@ -90,6 +90,18 @@ class GoClass {
           this.getLinuxEnvironment()
         );
         break;
+      case "darwin":
+        await this.executeCmd(
+          this.getDarwinCompiler(
+            `build -o ${__dirname}/.go.compiled/${path
+              .split("/")
+              .pop()
+              .split(".")
+              .shift()} ${path}`
+          ),
+          this.getDarwinEnvironment()
+        );
+        break;
     }
   }
 
@@ -125,6 +137,12 @@ class GoClass {
             this.getLinuxEnvironment()
           );
           break;
+        case "darwin":
+          await this.executeCmd(
+            this.getDarwinCompiler(`get ${imports[pkg]}`),
+            this.getDarwinEnvironment()
+          );
+          break;
       }
     }
   }
@@ -144,18 +162,25 @@ class GoClass {
           this.getLinuxEnvironment()
         );
         return linux.trim();
+      case "darwin":
+        let darwin = await this.executeCmd(
+          `${this.Path}`,
+          this.getDarwinEnvironment()
+        );
+        return darwin.trim();
       default:
         throw new Error("Platform not supported");
     }
   }
 
+  getDarwinCompiler(command) {
+    return `${__dirname}/compilers/darwin_${this.getArch()}/bin/go ${command}`;
+  }
   getLinuxCompiler(command) {
     return `${__dirname}/compilers/linux_${this.getArch()}/bin/go ${command}`;
   }
   getWindowsCompiler(command) {
-    return `${__dirname}\\compilers\\windows_${this.getArch()}\\bin\\go.exe ${
-      command
-    }`;
+    return `${__dirname}\\compilers\\windows_${this.getArch()}\\bin\\go.exe ${command}`;
   }
 
   getWindowsEnvironment() {
@@ -169,6 +194,13 @@ class GoClass {
     return {
       GOPATH: `${__dirname}/.go.home`,
       GOROOT: `${__dirname}/compilers/linux_${this.getArch()}`
+    };
+  }
+
+  getDarwinEnvironment() {
+    return {
+      GOPATH: `${__dirname}/.go.home`,
+      GOROOT: `${__dirname}/compilers/darwin_${this.getArch()}`
     };
   }
 
